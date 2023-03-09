@@ -13,4 +13,4 @@ class User(db.Model):
     phone = db.Column(db.String(50), nullable=False)
     role = db.Column(db.Enum(RoleType), default=RoleType.complainer, nullable=False)
     iban = db.Column(db.String(22))
-
+    is_deleted = db.Column(db.Boolean(), nullable=False, default=False)
