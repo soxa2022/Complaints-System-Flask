@@ -1,6 +1,5 @@
+from db import db
 from models.enum import RoleType
-
-from app import db
 
 
 class User(db.Model):
@@ -13,4 +12,4 @@ class User(db.Model):
     phone = db.Column(db.String(50), nullable=False)
     role = db.Column(db.Enum(RoleType), default=RoleType.complainer, nullable=False)
     iban = db.Column(db.String(22))
-    is_deleted = db.Column(db.Boolean(), nullable=False, default=False)
+    is_deleted = db.Column(db.Boolean(), default=False, nullable=False)
