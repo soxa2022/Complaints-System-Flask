@@ -48,14 +48,13 @@ class AuthManager:
 auth = HTTPTokenAuth(scheme="Bearer")
 
 
-# @auth.verify_token(token):
-#
-#
-# try:
-#     payload = AuthManager.decode_token(token)
-#     user = User.query.filter_by(id=payload["sub"]).first()
-#     if not user:
-#         raise Unauthorized("Invalid or missing user")
-#     return user
-# except Exception as ex:
-#     raise Unauthorized("Invalid or missing token")
+@auth.verify_token
+def verify_token(token):
+    try:
+        payload = AuthManager.decode_token(token)
+        user = User.query.filter_by(id=payload["sub"]).first()
+        if not user:
+            raise Unauthorized("Invalid or missing user")
+        return user
+    except Exception as ex:
+        raise Unauthorized("Invalid or missing token")

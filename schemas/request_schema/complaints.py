@@ -1,9 +1,5 @@
-from marshmallow import Schema, fields
+from schemas.base import ComplaintBaseSchema
 
 
-class ComplaintRequestSchema(Schema):
-    title = fields.Str(Required=True)
-    description = fields.Str(Required=True)
-    photo_url = fields.Str(Required=True)
-    amount = fields.Float(Required=True)
-    
+class ComplaintRequestSchema(ComplaintBaseSchema):
+    pass
