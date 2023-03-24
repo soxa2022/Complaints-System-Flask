@@ -18,5 +18,5 @@ def create_super_user(first_name, last_name, email, phone, password):
     db.session.commit()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     create_super_user()

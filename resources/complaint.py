@@ -5,8 +5,11 @@ from managers.auth import auth
 from managers.complaint import ComplaintManager
 from models import RoleType
 from schemas.request_schema.complaints import ComplaintRequestSchema
-from schemas.response_schema.complaints import ComplaintResponseSchema, ComplaintsResponseSchema
-from utils.decorators import validate_schema, permission_required, validate_status
+from schemas.response_schema.complaints import (
+    ComplaintResponseSchema,
+    ComplaintsResponseSchema,
+)
+from utils.decorators import validate_schema, permission_required
 
 
 class ComplaintsResource(Resource):
