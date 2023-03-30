@@ -7,7 +7,6 @@ from models import RoleType
 from schemas.request_schema.complaints import ComplaintRequestSchema
 from schemas.response_schema.complaints import (
     ComplaintResponseSchema,
-    ComplaintsResponseSchema,
 )
 from utils.decorators import validate_schema, permission_required
 
@@ -26,7 +25,7 @@ class ComplaintsResource(Resource):
     def post(self):
         data = request.get_json()
         complaint = ComplaintManager.create_complaint(data)
-        return ComplaintsResponseSchema().dump(complaint), 201
+        return ComplaintResponseSchema().dump(complaint), 201
 
 
 class ComplaintApproveResource(Resource):

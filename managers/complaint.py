@@ -1,17 +1,21 @@
+import os
 import uuid
 
 from werkzeug.exceptions import BadRequest
 
+from constans import TEMP_FILE_FOLDER
 from db import db
 from managers.auth import auth
 from models import Complaint, RoleType, State, TransactionModel
+from services.s3 import S3Service
 from services.wise import WiseService
-from utils.decorators import validate_complaint_id
+from utils.helper import decode_photo
+
+wise_service = WiseService()
+s3_service = S3Service()
 
 
 class ComplaintManager:
-    wise_service = WiseService()
-
     @staticmethod
     def get_complaints():
         current_user = auth.current_user()
@@ -36,6 +40,20 @@ class ComplaintManager:
     def create_complaint(complaint_data):
         current_user = auth.current_user()
         complaint_data["user_id"] = current_user.id
+
+        photo_into_str = complaint_data.pop("photo")
+        extension = complaint_data.pop("extension")
+        photo_name = f"{str(uuid.uuid4())}.{extension}"
+        path_photo_file = os.path.join(TEMP_FILE_FOLDER, photo_name)
+        decode_photo(path_photo_file, photo_into_str)
+        try:
+            url = s3_service.upload_file(path_photo_file, photo_name)
+        except Exception as ex:
+            raise Exception("Upload photo failed")
+        finally:
+            os.remove(path_photo_file)
+
+        complaint_data["photo_url"] = url
         complaint = Complaint(**complaint_data)
         amount = complaint_data["amount"]
         full_name = f"{current_user.first_name} {current_user.last_name}"
@@ -48,6 +66,7 @@ class ComplaintManager:
         db.session.add(transaction)
         db.session.flush()
         db.session.commit()
+        return complaint
 
     @staticmethod
     def approve_complaint(complaint_id):
@@ -55,7 +74,7 @@ class ComplaintManager:
         transaction = TransactionModel.query.filter_by(
             complaint_id=complaint_id
         ).first()
-        ComplaintManager.wise_service.fund_transfer(transaction.transfer_id)
+        wise_service.fund_transfer(transaction.transfer_id)
         Complaint.query.filter_by(id=complaint_id).update({"status": State.approved})
         db.session.commit()
 
@@ -65,7 +84,7 @@ class ComplaintManager:
         transaction = TransactionModel.query.filter_by(
             complaint_id=complaint_id
         ).first()
-        ComplaintManager.wise_service.cancel_transfers(transaction.transfer_id)
+        wise_service.cancel_transfers(transaction.transfer_id)
         Complaint.query.filter_by(id=complaint_id).update({"status": State.rejected})
         db.session.commit()
 
@@ -79,10 +98,10 @@ class ComplaintManager:
 
     @staticmethod
     def issue_transaction(amount, full_name, iban, complaint_id):
-        quote_id = ComplaintManager.wise_service.create_quote(amount)
-        recipient_id = ComplaintManager.wise_service.create_recipient(full_name, iban)
+        quote_id = wise_service.create_quote(amount)
+        recipient_id = wise_service.create_recipient(full_name, iban)
         custom_trans_id = str(uuid.uuid4())
-        transaction_id = ComplaintManager.wise_service.create_transfer(
+        transaction_id = wise_service.create_transfer(
             quote_id, recipient_id, custom_trans_id
         )
         transaction = TransactionModel(

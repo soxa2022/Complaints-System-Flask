@@ -1,5 +1,6 @@
 from decouple import config
 from flask import Flask
+from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_restful import Api
 
@@ -9,10 +10,9 @@ from routes import routes
 app = Flask(__name__)
 app.config.from_object(config("ENVIRONMENT_FLASK_OBJECT"))
 
-
 api = Api(app)
 migrate = Migrate(app, db)
-
+CORS(app)
 with app.app_context():
     db.init_app(app)
 
