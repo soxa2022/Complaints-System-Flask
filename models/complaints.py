@@ -15,3 +15,5 @@ class Complaint(db.Model):
     status = db.Column(db.Enum(State), default=State.pending, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     user = db.relationship("User")
+    is_deleted = db.Column(db.Boolean(), default=False, nullable=False)
+

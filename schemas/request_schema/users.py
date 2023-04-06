@@ -8,7 +8,6 @@ class UserRegistrationRequestSchema(UserRequestBaseSchema):
     last_name = fields.String(required=True)
     phone = fields.String(required=True)
     iban = fields.String(min_length=22, max_length=22, required=True)
-    is_deleted = fields.Boolean()
 
 
 class UserLoginRequestSchema(UserRequestBaseSchema):
