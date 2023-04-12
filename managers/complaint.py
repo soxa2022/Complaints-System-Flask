@@ -1,6 +1,7 @@
 import os
 import uuid
 
+from flask import Response
 from werkzeug.exceptions import BadRequest
 
 from constans import TEMP_FILE_FOLDER
@@ -60,11 +61,8 @@ class ComplaintManager:
         iban = current_user.iban
         db.session.add(complaint)
         db.session.flush()
-        transaction = ComplaintManager.issue_transaction(
-            amount, full_name, iban, complaint.id
-        )
-        db.session.add(transaction)
-        db.session.flush()
+        ComplaintManager.issue_transaction(amount, full_name, iban, complaint.id)
+
         db.session.commit()
         return complaint
 
@@ -112,7 +110,8 @@ class ComplaintManager:
             amount=amount,
             complaint_id=complaint_id,
         )
-        return transaction
+        db.session.add(transaction)
+        db.session.flush()
 
 
 role_mapper = {

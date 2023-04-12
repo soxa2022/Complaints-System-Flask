@@ -16,4 +16,3 @@ class Complaint(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     user = db.relationship("User")
     is_deleted = db.Column(db.Boolean(), default=False, nullable=False)
-

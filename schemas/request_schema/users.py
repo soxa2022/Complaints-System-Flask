@@ -7,7 +7,10 @@ class UserRegistrationRequestSchema(UserRequestBaseSchema):
     first_name = fields.String(required=True)
     last_name = fields.String(required=True)
     phone = fields.String(required=True)
-    iban = fields.String(min_length=22, max_length=22, required=True)
+    # We made it with 'metadata',because we received testing warnings
+    iban = fields.String(
+        metadata={"min_length": 22, "max_length": 22, "Required": True}
+    )
 
 
 class UserLoginRequestSchema(UserRequestBaseSchema):

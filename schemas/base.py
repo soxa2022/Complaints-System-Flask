@@ -12,7 +12,7 @@ class UserResponseBaseSchema(Schema):
 
 
 class ComplaintBaseSchema(Schema):
-    title = fields.Str(Required=True)
-    description = fields.Str(Required=True)
-    amount = fields.Float(Required=True)
+    title = fields.Str(metadata={"Required": True})
+    description = fields.Str(metadata={"Required": True})
+    amount = fields.Float(metadata={"Required": True})
     is_deleted = fields.Boolean()

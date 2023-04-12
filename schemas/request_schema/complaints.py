@@ -4,5 +4,5 @@ from schemas.base import ComplaintBaseSchema
 
 
 class ComplaintRequestSchema(ComplaintBaseSchema):
-    photo = fields.Str(Required=True)
-    extension = fields.String(required=True)
+    photo = fields.Str(metadata={"Required": True})
+    extension = fields.String(metadata={"Required": True})
