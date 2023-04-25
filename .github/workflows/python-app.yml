@@ -49,17 +49,5 @@ jobs:
         pip install -r requirements.txt
         export PGPASSWORD="soxa"
         pytest
-    - name: Check packages for vulnerability
-      pip-audit:
-        runs-on: ubuntu-latest
-        steps:
-          - uses: actions/checkout@v3
-          - uses: pypa/gh-action-pip-audit@v1.0.0
-            with:
-              inputs: requirements.txt
-    - name: Standardize(PEP8) code using module Black
-      lint:
-        runs-on: ubuntu-latest
-        steps:
-          - uses: actions/checkout@v3
-          - uses: psf/black@stable
+    
+     
