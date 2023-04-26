@@ -12,6 +12,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: psf/black@stable
+  selftest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pypa/gh-action-pip-audit@v1.0.6
+        with:
+         inputs: requirements.txt 
   build:
     runs-on: ubuntu-latest
     services:
